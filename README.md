@@ -3,7 +3,7 @@ Simple examples of network programming using Python's
 of the code is taken from online tutorials with some changes added to use Python 3
 latest modules.
 
-All feedback is welcome.
+This code was used in the 2016 summer training at Mansoura University, slides can be found [here] (http://www.slideshare.net/karim279/network-programming-using-python).
 
 ### Resources
 1. [Echo Server - Python socket documentation] (https://docs.python.org/3/library/socket.html)
