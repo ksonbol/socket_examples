@@ -3,10 +3,11 @@
 import socket, time
 
 HOST = socket.gethostname()
-PORT = 6001
-BUFFER_SIZE = 1024
+PORT = 6000
+BUFFER_SIZE = 4096
 
 s = socket.socket()
+s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s.bind((HOST, PORT))
 s.listen(5)
 
@@ -17,20 +18,21 @@ while True:
     print('New Connection from {}'.format(addr))
     with open('file.txt', 'rb') as f:
         print('Sending File..')
+        sent = 0
         count = 0
         # for python >= 3.5, use conn.sendfile(f) instead of the loop
         while True:
             l = f.read(BUFFER_SIZE)
             if not l:
-                print('Total size: {}\n'.format(count*BUFFER_SIZE))
-                conn.send(b'#FINISHED')
+                print()
+                print('Total size: {} bytes\n'.format(sent))
                 break
-            conn.send(l)
+            conn.sendall(l)
+            sent += len(l)
             count += 1
             if count % 1000 == 0:
-                print('Bytes Sent: {}\n'.format(count*BUFFER_SIZE))
-                # REMOVE THIS LINE IN REAL APPLICAIONS
-                time.sleep(0.1) # for presentation purposes only
+                print(".", end="", flush=True)
+
 
     print('Finished Sending.')
 

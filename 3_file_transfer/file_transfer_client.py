@@ -1,27 +1,31 @@
 # file_transfer_client.py
 
-import socket               # Import socket module
+import socket, sys          # Import socket module
 
 s = socket.socket()         # Create a socket object
 HOST = socket.gethostname() # Get local machine name
-PORT = 6001                 # Reserve a port for your service.
-BUFFER_SIZE = 1024
+PORT = 6000                 # Reserve a port for your service.
+BUFFER_SIZE = 4096
 
 s.connect((HOST, PORT))
+
 with open('received.txt', 'wb') as f:
+    received = 0
     count = 0
     print('waiting for server..')
     while True:
         data = s.recv(BUFFER_SIZE)
-        if count == 0:
+        if received == 0:
             print('downloading file..')
-        if data == b'#FINISHED':
-            print('Total size: {}\n'.format(count*BUFFER_SIZE))
+        if not data:
+            print()
+            print('Total size: {} bytes\n'.format(received))
             break
         f.write(data)
+        received += len(data)
         count += 1
-        if count % 100 == 0:
-            print('Bytes Received: {}\n'.format(count*BUFFER_SIZE))
+        if count % 1000 == 0:
+            print(".", end="", flush=True)
 
 print('File downloaded successfully.')
 
